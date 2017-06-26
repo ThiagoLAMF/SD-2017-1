@@ -128,7 +128,7 @@ public class ServidorSD {
     {
         try 
         {
-            handler = new DBHandler(caminho);
+            handler = new DBHandler(caminho,1); //server id
             processor = new GrafoDB.Processor(handler);
 
             Runnable simple = new Runnable() {

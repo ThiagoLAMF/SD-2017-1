@@ -6,6 +6,8 @@
 package servidorsd;
 
 import java.nio.ByteBuffer;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collections;
 import org.apache.thrift.TException;
@@ -14,10 +16,16 @@ import java.util.List;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import shared.*;
 
 public class DBHandler implements GrafoDB.Iface {
 
+    private final int N_SERVERS = 3;
+    private final String[] serverURLs = {"localhost:8080","localhost:8081","localhost:8082"};
+    private final int serverID; //ID do server corrente
+    
     private Grafo grafo = new Grafo();
     private ReadWriteLock lock = new ReentrantReadWriteLock();
     /**
@@ -27,7 +35,7 @@ public class DBHandler implements GrafoDB.Iface {
     private String caminho = "";
     
 
-    public DBHandler(String caminho) {
+    public DBHandler(String caminho,int serverID) {
         //log = new HashMap<Integer, SharedStruct>();
         this.caminho = caminho;
         Grafo g = Persistencia.getGrafo(caminho);
@@ -39,17 +47,87 @@ public class DBHandler implements GrafoDB.Iface {
         {
             grafo = g;
         }
+        this.serverID = serverID;
     }
 
+    /**
+     * Verifica o server em que o vértice será inserido.
+     * @param nomeVertice
+     * @return 
+     */
+    private int getServer(String nomeVertice)
+    {
+        try 
+        {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            byte[] digest = md.digest(nomeVertice.getBytes());
+            int server = ByteBuffer.wrap(digest).getInt();
+            
+            return server % N_SERVERS;
+        } 
+        catch (NoSuchAlgorithmException ex) 
+        {
+            return -1;
+        }
+    }
+    
     public boolean ping() {
         System.out.println("[DB] ping()");
         return true;
+    }
+    
+    @Override
+    public Vertice getVertice(int id){
+        try
+        {
+            lock.readLock().lock();
+            for(Vertice v : grafo.getVertices())
+            {
+                if(v.getId() == id)
+                {
+                    return v;
+                }
+            }
+            return null;
+        }
+        finally
+        {
+            lock.readLock().unlock();
+        }
+    }
+
+    @Override
+    public Aresta getAresta(int id1, int id2) {
+        try
+        {
+            lock.readLock().lock();
+            for(Aresta a : grafo.getArestas())
+            {
+                if(a.getVertice1() == id1 && a.getVertice2() == id2)
+                {
+                    return a;
+                }
+            }
+            return null;
+        }
+        finally
+        {
+            lock.readLock().unlock();
+        }
     }
 
     @Override
     public boolean insereVertice(Vertice vert){
         System.out.println("[DB] insereVertice()");
         
+        int server = getServer(vert.getId() + "");
+        
+        if(server != serverID) // é preciso inserir o vertice em outro servidor
+        {
+            return ClienteAux.insereVertice(serverURLs[server], vert);
+        }
+        
+        // Vértice será inserido neste servidor
         try
         {
             lock.writeLock().lock();
@@ -89,32 +167,46 @@ public class DBHandler implements GrafoDB.Iface {
     public boolean insereAresta(Aresta arest) {
         System.out.println("[DB] insereAresta()");
         
+        
+        //Verificar a qual servidor pertence o primeiro vertice
+        int server = getServer(arest.getVertice1() + "");
+        
+        if(server != serverID) // é preciso inserir a aresta em outro servidor
+        {
+            return ClienteAux.insereAresta(serverURLs[server], arest);
+        }
+        
+        //Aresta será inserida no servidor corrente:
+        //Verifica se os vértices estão no servidor:
         boolean flagVertice1 = false;
         boolean flagVertice2 = false;
+        
+        server = getServer(arest.getVertice2() + "");
+        if(server != serverID) //Vertice 2 está em um servidor diferente
+        {
+            if(ClienteAux.getVertice(serverURLs[server], arest.getVertice2()) != null) 
+                flagVertice2 = true;
+        }
+        else //Vertice 2 está no servidor corrente
+        {
+            if(this.getVertice(arest.getVertice2()) != null)
+                flagVertice2 = true;
+        }
+         
+        //Verificar se vertice 1 existe
+        if(this.getVertice(arest.getVertice1()) != null)
+            flagVertice1 = true;
+        
+        if(!flagVertice1 || !flagVertice2) return false;
+            
         try
         {
             lock.writeLock().lock();
-            if(grafo.getVerticesSize() > 0)
-            {
-                for(Vertice v : grafo.getVertices()) //Verifica se ambos vertices estão no grafo
-                {
-                    if(v.getId() == arest.getVertice1()) flagVertice1 = true;
-                    if(v.getId() == arest.getVertice2()) flagVertice2 = true;
-            
-                    if(flagVertice1 && flagVertice2) break;
-                }
-            }
-            if(flagVertice1 && flagVertice2)
-            {
-                grafo.addToArestas(arest);
-                Persistencia.limpaArquivo(caminho);
-                Persistencia.salvaGrafo(grafo, caminho);
-            }
-            else
-            {
-                return false;
-            }
-            
+
+            grafo.addToArestas(arest);
+            Persistencia.limpaArquivo(caminho);
+            Persistencia.salvaGrafo(grafo, caminho);
+            return true;
         }
         catch(Exception e)
         {
@@ -125,12 +217,56 @@ public class DBHandler implements GrafoDB.Iface {
         {
             lock.writeLock().unlock();
         }
-        return true;
     }
 
     @Override
+    public boolean removeArestaFromVertice(int id){
+        System.out.println("[DB] removeArestaFromVertice("+id+")");
+         
+        try
+        {
+            lock.writeLock().lock();
+            List<Aresta> paraRemover = new ArrayList<>();
+            for(Aresta a : grafo.getArestas() )
+            {
+                if(id == a.getVertice1() || id == a.getVertice2() )
+                {
+                    paraRemover.add(a);
+                }
+            }
+            grafo.getArestas().removeAll(paraRemover);
+ 
+            Persistencia.limpaArquivo(caminho);
+            Persistencia.salvaGrafo(grafo, caminho);
+            return true;
+        }
+        catch(Exception e)
+        {
+            return false;
+        }
+        finally
+        {
+            lock.writeLock().unlock();
+        }
+    }
+    
+    @Override
     public boolean removeVertice(Vertice vert){
         System.out.println("[DB] removeVertice("+vert.getId()+")");
+        
+        int server = getServer(vert.getId() + "");
+        
+        if(server != serverID) // é preciso remover o vertice em outro servidor
+        {
+            return ClienteAux.removeVertice(serverURLs[server], vert);
+        }
+        
+        //É preciso remover arestas de todos os servidores:
+        for(String URLs : serverURLs)
+        {
+            if(URLs.compareTo(serverURLs[serverID]) != 0)
+                    ClienteAux.removeArestaFromVertice(URLs, vert.getId());
+        }
         
         try
         {
@@ -171,6 +307,13 @@ public class DBHandler implements GrafoDB.Iface {
     public boolean removeAresta(Aresta arest){
         System.out.println("[DB] removeAresta()");
         
+        int server = getServer(arest.getVertice1() + "");
+        
+        if(server != serverID) //Aresta esta em outro server
+        {
+            return ClienteAux.removeAresta(serverURLs[server], arest);
+        }
+        
         try
         {
             lock.writeLock().lock();
@@ -198,6 +341,14 @@ public class DBHandler implements GrafoDB.Iface {
 
     @Override
     public boolean editaAresta(Aresta arest) {
+        
+        int server = getServer(arest.getVertice1() + "");
+        
+        if(server != serverID) //Aresta esta em outro server
+        {
+            return ClienteAux.editaAresta(serverURLs[server], arest);
+        }
+        
         try
         {
             lock.writeLock().lock();
@@ -229,6 +380,14 @@ public class DBHandler implements GrafoDB.Iface {
 
     @Override
     public boolean editaVertice(Vertice vert) {
+        
+        int server = getServer(vert.getId() + "");
+        
+        if(server != serverID) //Aresta esta em outro server
+        {
+            return ClienteAux.editaVertice(serverURLs[server], vert);
+        }
+        
         try
         {
             lock.writeLock().lock();
@@ -277,10 +436,16 @@ public class DBHandler implements GrafoDB.Iface {
         System.out.println("[DB] getArestas()");
         List<Aresta> listaArestas = null;
         
+        //É preciso pegar as arestas dos outros servidores
+        for(String URLs : serverURLs)
+        {
+            if(URLs.compareTo(serverURLs[serverID]) != 0) //TODO nao funciona
+                listaArestas.addAll(ClienteAux.getArestas(URLs));
+        }
         try
         {
             lock.readLock().lock();
-            if(grafo.getArestasSize()> 0) listaArestas = grafo.getArestas();
+            if(grafo.getArestasSize()> 0) listaArestas.addAll(grafo.getArestas());
         }
         finally
         {
@@ -295,10 +460,16 @@ public class DBHandler implements GrafoDB.Iface {
         System.out.println("[DB] getVertices()");
         List<Vertice> vertices = null;
         
+        //É preciso pegar as arestas dos outros servidores
+        for(String URLs : serverURLs)
+        {
+            if(URLs.compareTo(serverURLs[serverID]) != 0)//TODO nao funciona
+                vertices.addAll(ClienteAux.getVertices(URLs));
+        }
         try
         {
             lock.readLock().lock();
-            if(grafo.getVerticesSize() > 0)vertices = grafo.getVertices();
+            if(grafo.getVerticesSize() > 0)vertices.addAll(grafo.getVertices());
         }
         finally
         {
@@ -512,7 +683,6 @@ public class DBHandler implements GrafoDB.Iface {
     {
         return caminhos.stream().filter(f -> f.vertice.getId() == vId).findFirst().get().verticeAnterior.getId();
     }
-
     
     private class TabelaDijkstra implements Comparable<TabelaDijkstra>
     {
