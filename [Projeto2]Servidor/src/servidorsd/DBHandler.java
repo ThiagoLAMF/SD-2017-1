@@ -23,7 +23,7 @@ import shared.*;
 public class DBHandler implements GrafoDB.Iface {
 
     private final int N_SERVERS = 3;
-    private final String[] serverURLs = {"localhost:8080","localhost:8081","localhost:8082"};
+    private final String[] serverURLs = {"localhost:9090","localhost:9091","localhost:9092"};
     private final int serverID; //ID do server corrente
     
     private Grafo grafo = new Grafo();
@@ -62,7 +62,7 @@ public class DBHandler implements GrafoDB.Iface {
             MessageDigest md = MessageDigest.getInstance("MD5");
             byte[] digest = md.digest(nomeVertice.getBytes());
             int server = ByteBuffer.wrap(digest).getInt();
-            
+            if(server<0) server = server * -1;
             return server % N_SERVERS;
         } 
         catch (NoSuchAlgorithmException ex) 
@@ -121,6 +121,8 @@ public class DBHandler implements GrafoDB.Iface {
         System.out.println("[DB] insereVertice()");
         
         int server = getServer(vert.getId() + "");
+        
+        System.out.println("[DB] Vertice irá ser inserido em:" + server);
         
         if(server != serverID) // é preciso inserir o vertice em outro servidor
         {
@@ -432,15 +434,18 @@ public class DBHandler implements GrafoDB.Iface {
     }
 
     @Override
-    public List<Aresta> getArestas(Vertice vert) {
+    public List<Aresta> getArestas(boolean recursive) {
         System.out.println("[DB] getArestas()");
-        List<Aresta> listaArestas = null;
+        List<Aresta> listaArestas = new ArrayList<Aresta>();
         
         //É preciso pegar as arestas dos outros servidores
-        for(String URLs : serverURLs)
+        if(recursive)
         {
-            if(URLs.compareTo(serverURLs[serverID]) != 0) //TODO nao funciona
-                listaArestas.addAll(ClienteAux.getArestas(URLs));
+            for(String URLs : serverURLs)
+            {
+                if(URLs.compareTo(serverURLs[serverID]) != 0)
+                    listaArestas.addAll(ClienteAux.getArestas(URLs));
+            }
         }
         try
         {
@@ -456,15 +461,18 @@ public class DBHandler implements GrafoDB.Iface {
     }
 
     @Override
-    public List<Vertice> getVertices(Aresta arest){
+    public List<Vertice> getVertices(boolean recursive){
         System.out.println("[DB] getVertices()");
-        List<Vertice> vertices = null;
+        List<Vertice> vertices = new ArrayList<Vertice>();
         
         //É preciso pegar as arestas dos outros servidores
-        for(String URLs : serverURLs)
+        if(recursive)
         {
-            if(URLs.compareTo(serverURLs[serverID]) != 0)//TODO nao funciona
-                vertices.addAll(ClienteAux.getVertices(URLs));
+            for(String URLs : serverURLs)
+            {
+                if(URLs.compareTo(serverURLs[serverID]) != 0)
+                    vertices.addAll(ClienteAux.getVertices(URLs));
+            }
         }
         try
         {
@@ -482,31 +490,27 @@ public class DBHandler implements GrafoDB.Iface {
     public List<Vertice> getVizinhos(Vertice vert){
         System.out.println("[DB] getVizinhos()");
         
-        List<Vertice> vertices = new ArrayList<>();
+        List<Vertice> verticesVizinhos = new ArrayList<>();
         
-        try
+        List<Aresta> arestas = this.getArestas(true);
+        List<Vertice> vertices = this.getVertices(true);
+        
+        if (vertices.size() > 0)
         {
-            lock.readLock().lock();
-            if(grafo.getVerticesSize() > 0)
+            for (Aresta a : arestas)
             {
-                for(Aresta a : grafo.getArestas())
+                if ((a.getVertice1() == vert.getId() && vert.getId() != a.getVertice2()))
                 {
-                    if( (a.getVertice1() == vert.getId() && vert.getId() != a.getVertice2())) 
-                    {
-                        vertices.add(grafo.getVerticeById(a.getVertice2()));
-                    }
-                    if((a.getVertice2() == vert.getId() && vert.getId() != a.getVertice1()))
-                    {
-                        vertices.add(grafo.getVerticeById(a.getVertice1()));
-                    }
+                    //verticesVizinhos.add(grafo.getVerticeById(a.getVertice2()));
+                    verticesVizinhos.add(vertices.stream().filter(f -> f.getId() == a.getVertice2()).findFirst().get());
+                }
+                if ((a.getVertice2() == vert.getId() && vert.getId() != a.getVertice1()))
+                {
+                    verticesVizinhos.add(vertices.stream().filter(f -> f.getId() == a.getVertice1()).findFirst().get());
                 }
             }
         }
-        finally
-        {
-            lock.readLock().unlock();
-        }
-        return vertices;
+        return verticesVizinhos;
     }
     @Override
     public boolean resetaGrafo() throws TException {
@@ -535,6 +539,8 @@ public class DBHandler implements GrafoDB.Iface {
      */
     @Override
     public List<Integer> getMenorCaminho(Vertice v1, Vertice v2) {
+        List<Aresta> arestas = this.getArestas(true);
+        List<Vertice> vertices = this.getVertices(true);
         try 
         {
             lock.readLock().lock();
@@ -548,7 +554,7 @@ public class DBHandler implements GrafoDB.Iface {
             boolean flagV1 = false;
             boolean flagV2 = false;
             //Inicia tabela e não visitados/Verifica se v1 e v2 estão no grafo
-            for (Vertice v : grafo.getVertices()) 
+            for (Vertice v : vertices) 
             {
                 naovisitados.add(v);
                 TabelaDijkstra novo = new TabelaDijkstra();
@@ -598,10 +604,10 @@ public class DBHandler implements GrafoDB.Iface {
 
                 //atualiza distancia dos vizinhos
                 double distanciaAtual = getDistancia(caminhos, atual.getId());
-                //System.out.println("Vizinhos size: " + vizinhos.size());
+                System.out.println("Vizinhos size: " + vizinhos.size());
                 for (Vertice v : vizinhos) 
                 {
-                    Aresta arestaAtual = getArestaFrom(atual, v, true);
+                    Aresta arestaAtual = getArestaFrom(atual, v, true,arestas);
                     double distanciaAteVizinho = distanciaAtual + arestaAtual.peso;
                     TabelaDijkstra viz = getAt(caminhos, v.getId());
                     
@@ -664,10 +670,10 @@ public class DBHandler implements GrafoDB.Iface {
         }
     }
     
-    private Aresta getArestaFrom(Vertice v1, Vertice v2,boolean bidirecional)
+    private Aresta getArestaFrom(Vertice v1, Vertice v2,boolean bidirecional,List<Aresta> arestas)
     {
-        if(!bidirecional)return grafo.getArestas().stream().filter(f -> f.getVertice1() == v1.getId() && f.getVertice2() == v2.getId()).findFirst().get();
-        else return grafo.getArestas().stream().filter(f -> 
+        if(!bidirecional)return arestas.stream().filter(f -> f.getVertice1() == v1.getId() && f.getVertice2() == v2.getId()).findFirst().get();
+        else return arestas.stream().filter(f -> 
                 (f.getVertice1() == v1.getId() && f.getVertice2() == v2.getId()) ||
                 (f.getVertice1() == v2.getId() && f.getVertice2() == v1.getId())        ).findFirst().get();
     }

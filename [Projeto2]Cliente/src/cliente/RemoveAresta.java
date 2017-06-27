@@ -36,7 +36,7 @@ public class RemoveAresta extends javax.swing.JFrame {
     {
         try
         {
-            arestas = conexao.getClient().getGrafo().getArestas();
+            arestas = conexao.getClient().getArestas(true);
             DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
             model.setRowCount(0);
             if(arestas != null && arestas.size() > 0)

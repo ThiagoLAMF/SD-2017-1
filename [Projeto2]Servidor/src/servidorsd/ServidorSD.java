@@ -22,15 +22,22 @@ public class ServidorSD {
     public static GrafoDB.Processor processor;
     
     private String caminho = "";
+    private int porta;
     
-    public ServidorSD(String caminho)
+    public ServidorSD(String caminho,int porta)
     {
         this.caminho = caminho;
+        this.porta = porta;
 
     }
     public void setCaminho(String caminho)
     {
         this.caminho = caminho;
+    }
+    
+    public void setPorta(int porta)
+    {
+        this.porta = porta;
     }
     /*public static void main(String args[]) {
         try 
@@ -128,7 +135,19 @@ public class ServidorSD {
     {
         try 
         {
-            handler = new DBHandler(caminho,1); //server id
+            if(porta == 9090)
+            {
+               handler = new DBHandler(caminho,0); //server id
+            }
+            else if(porta == 9091)
+            {
+               handler = new DBHandler(caminho,1); //server id
+            }
+            else
+            {
+               handler = new DBHandler(caminho,2); //server id
+            }
+            
             processor = new GrafoDB.Processor(handler);
 
             Runnable simple = new Runnable() {
@@ -150,11 +169,11 @@ public class ServidorSD {
             x.printStackTrace();
         }
     }
-    public static void simple(GrafoDB.Processor processor) {
+    public void simple(GrafoDB.Processor processor) {
         
         try 
         {
-            TServerTransport serverTransport = new TServerSocket(9090);
+            TServerTransport serverTransport = new TServerSocket(porta);
             TServer server = new TThreadPoolServer(new TThreadPoolServer.Args(serverTransport).processor(processor));
 
             System.out.println("[SERVER] Starting server...");

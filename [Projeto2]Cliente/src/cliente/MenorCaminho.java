@@ -139,9 +139,9 @@ public class MenorCaminho extends javax.swing.JFrame {
      
         try
         {
-            Grafo g = conexao.getClient().getGrafo();
-            Vertice v1 = g.getVerticeById(id1);
-            Vertice v2 = g.getVerticeById(id2);
+            List<Vertice>  vertices = conexao.getClient().getVertices(true);
+            Vertice v1 = getVerticeById(id1,vertices);
+            Vertice v2 = getVerticeById(id2,vertices);
             List<Integer> retorno = null;
             if(v1 != null && v2 != null) retorno= conexao.getClient().getMenorCaminho(v1, v2);
             if(retorno == null || retorno.size() == 0)
@@ -167,7 +167,14 @@ public class MenorCaminho extends javax.swing.JFrame {
         dispose(); //Destroy the JFrame object
     }//GEN-LAST:event_btnSairActionPerformed
 
-
+    public Vertice getVerticeById(int id,List<Vertice> vertices)
+  {
+     for(Vertice v : vertices)
+      {
+          if(id == v.id) return v;
+      }
+      return null;
+  }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCalcular;

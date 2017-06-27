@@ -255,7 +255,7 @@ public class Menu extends javax.swing.JFrame {
         // TODO add your handling code here:
         try
         {
-            new Desenhar_Grafo(conexao.getClient().getGrafo());
+            new Desenhar_Grafo(conexao.getClient().getArestas(true),conexao.getClient().getVertices(true));
         }
         catch(Exception e)
         {

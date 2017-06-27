@@ -46,6 +46,7 @@ public class ClienteSD {
     {
         return this.client;
     }
+    
     public void fechaConexao()
     {
         try

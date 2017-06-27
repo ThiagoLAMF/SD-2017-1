@@ -31,6 +31,7 @@ public class ClienteAux {
         try 
         {
             String[] serverURL = URL.split(":");
+            System.out.println("[AUX] URL: " + serverURL[0] + " | " + serverURL[1]);
             transport = new TSocket(serverURL[0], Integer.parseInt(serverURL[1]));
             transport.open();
      
@@ -208,7 +209,7 @@ public class ClienteAux {
         
         try
         {
-            return client.getArestas(null);
+            return client.getArestas(false);
 
         } catch (TException ex)
         {
@@ -226,7 +227,7 @@ public class ClienteAux {
         
         try
         {
-            return client.getVertices(null);
+            return client.getVertices(false);
 
         } catch (TException ex)
         {

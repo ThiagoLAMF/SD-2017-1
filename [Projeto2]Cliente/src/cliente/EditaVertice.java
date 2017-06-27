@@ -36,7 +36,7 @@ public class EditaVertice extends javax.swing.JFrame {
     {
         try
         {
-            vertices = conexao.getClient().getGrafo().getVertices();
+            vertices = conexao.getClient().getVertices(true);
             
             DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
             model.setRowCount(0);
