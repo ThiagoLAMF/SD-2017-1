@@ -24,9 +24,10 @@ import shared.*;
 public class DBHandler implements GrafoDB.Iface {
 
     private final int N_SERVERS = 3;
-    private final String[][] serverURLs = {{"localhost:9000","localhost:9001","localhost:9002"},
-                                            {"localhost:9010","localhost:9011","localhost:9012"},
-                                            {"localhost:9020","localhost:9021","localhost:9022"},};
+    private final String[][] serverURLs = {{"localhost:9000"},{"localhost:9001"},{"localhost:9002"}};
+    /*private final String[][] serverURLs = {{"localhost:9000","localhost:9001","localhost:9002"},
+                                            {"localhost:9001","localhost:9011","localhost:9012"},
+                                            {"localhost:9002","localhost:9021","localhost:9022"},};*/
     
     private final Address[][] raftServerList = {{new Address("localhost",8000),new Address("localhost",8001),new Address("localhost",8002)},
                                                 {new Address("localhost",8010),new Address("localhost",8011),new Address("localhost",8012)},
@@ -46,7 +47,7 @@ public class DBHandler implements GrafoDB.Iface {
     public DBHandler(String caminho,int serverID) {
         //log = new HashMap<Integer, SharedStruct>();
         this.caminho = caminho;
-        Grafo g = Persistencia.getGrafo(caminho);
+        /*Grafo g = Persistencia.getGrafo(caminho);
         if(g == null || (g.getArestasSize() == 0 && g.getVerticesSize() == 0))
         {
             grafo = new Grafo();
@@ -54,8 +55,10 @@ public class DBHandler implements GrafoDB.Iface {
         else
         {
             grafo = g;
-        }
+        }*/
+        grafo = new Grafo();
         this.serverID = serverID;
+        System.out.println("ID:"+serverID);
     }
 
     /**
@@ -130,7 +133,7 @@ public class DBHandler implements GrafoDB.Iface {
         
         int server = getServer(vert.getId() + "");
         
-        System.out.println("[DB] Vertice irá ser inserido em:" + server);
+        System.out.println("[DB-"+serverID+"]Vertice irá ser inserido em:" + server);
         
         if(server != serverID) // é preciso inserir o vertice em outro servidor
         {
@@ -157,8 +160,8 @@ public class DBHandler implements GrafoDB.Iface {
                 }
             }
             grafo.addToVertices(vert);
-            Persistencia.limpaArquivo(caminho);
-            Persistencia.salvaGrafo(grafo, caminho);
+            //Persistencia.limpaArquivo(caminho);
+            //Persistencia.salvaGrafo(grafo, caminho);
             
         }
         catch(Exception e)
@@ -214,8 +217,8 @@ public class DBHandler implements GrafoDB.Iface {
             lock.writeLock().lock();
 
             grafo.addToArestas(arest);
-            Persistencia.limpaArquivo(caminho);
-            Persistencia.salvaGrafo(grafo, caminho);
+            //Persistencia.limpaArquivo(caminho);
+            //Persistencia.salvaGrafo(grafo, caminho);
             return true;
         }
         catch(Exception e)
@@ -246,8 +249,8 @@ public class DBHandler implements GrafoDB.Iface {
             }
             grafo.getArestas().removeAll(paraRemover);
  
-            Persistencia.limpaArquivo(caminho);
-            Persistencia.salvaGrafo(grafo, caminho);
+            //Persistencia.limpaArquivo(caminho);
+            //Persistencia.salvaGrafo(grafo, caminho);
             return true;
         }
         catch(Exception e)
@@ -303,8 +306,8 @@ public class DBHandler implements GrafoDB.Iface {
             if(grafo.getVerticesSize() > 0)
             {
                 boolean retorno = grafo.getVertices().remove(vert);
-                Persistencia.limpaArquivo(caminho);
-                Persistencia.salvaGrafo(grafo, caminho);
+                //Persistencia.limpaArquivo(caminho);
+                //Persistencia.salvaGrafo(grafo, caminho);
                 return retorno;
             }
         }
@@ -337,8 +340,8 @@ public class DBHandler implements GrafoDB.Iface {
             if(grafo.getArestasSize() > 0)
             {
                 grafo.getArestas().remove(arest);
-                Persistencia.limpaArquivo(caminho);
-                Persistencia.salvaGrafo(grafo, caminho);
+                //Persistencia.limpaArquivo(caminho);
+                //Persistencia.salvaGrafo(grafo, caminho);
                 
             }
             else return false;
@@ -380,8 +383,8 @@ public class DBHandler implements GrafoDB.Iface {
                         a.setDirecionado(arest.isDirecionado());
                     }
                 }
-                Persistencia.limpaArquivo(caminho);
-                Persistencia.salvaGrafo(grafo, caminho);
+                //Persistencia.limpaArquivo(caminho);
+                //Persistencia.salvaGrafo(grafo, caminho);
             }
         }
         catch(Exception e)
@@ -419,8 +422,8 @@ public class DBHandler implements GrafoDB.Iface {
                     }
                 }
             }
-            Persistencia.limpaArquivo(caminho);
-            Persistencia.salvaGrafo(grafo, caminho);
+            //Persistencia.limpaArquivo(caminho);
+            //Persistencia.salvaGrafo(grafo, caminho);
         }
         catch(Exception e)
         {
@@ -548,7 +551,7 @@ public class DBHandler implements GrafoDB.Iface {
             lock.writeLock().lock();
             grafo.clear();
             grafo = new Grafo();
-            Persistencia.limpaArquivo(caminho);
+            //Persistencia.limpaArquivo(caminho);
         }
         catch(Exception e)
         {

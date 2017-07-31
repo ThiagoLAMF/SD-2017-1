@@ -84,7 +84,7 @@ public class ServidorSD {
             TServerTransport serverTransport = new TServerSocket(porta);
             TServer server = new TThreadPoolServer(new TThreadPoolServer.Args(serverTransport).processor(processor));
 
-            System.out.println("[SERVER] Starting server...");
+            System.out.println("[SERVER] Starting server... |"+ idServidor+ ":" +porta );
             server.serve();
         } 
         catch (Exception e) 

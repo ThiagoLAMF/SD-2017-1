@@ -7,8 +7,10 @@ package cliente;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
+import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 import shared.Aresta;
 import shared.Vertice;
@@ -17,19 +19,23 @@ import shared.Vertice;
  *
  * @author ThiagoH
  */
-public class EditaVertice extends javax.swing.JFrame {
+public class FilmesAssistidos extends javax.swing.JFrame {
 
     ClienteSD conexao;
     List<Vertice> vertices;
+    List<Vertice> pessoas;
     /**
      * Creates new form InsereVertice
      */
-    public EditaVertice(ClienteSD conexao) {
+    public FilmesAssistidos(ClienteSD conexao) {
         initComponents();
         this.conexao = conexao;
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         this.setLocation(dim.width/2-this.getSize().width/2, dim.height/2-this.getSize().height/2);
         loadTabela();
+        jTable1.setRowSelectionAllowed(true);
+        jTable1.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        //pessoas = new ArrayList<>();
     }
     
     public void loadTabela()
@@ -38,13 +44,18 @@ public class EditaVertice extends javax.swing.JFrame {
         {
             vertices = conexao.getClient().getVertices(true);
             
+            pessoas = new ArrayList<>();
             DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
             model.setRowCount(0);
             if(vertices != null && vertices.size() > 0)
             {
                 for(Vertice v : vertices)
                 {
-                     model.addRow(new Object[]{v.getId(),v.getDesc(), v.getPeso(),v.getCor()});
+                    if(v.getCor() == ClienteSD.TYPE_USER)
+                    {
+                        model.addRow(new Object[]{v.getId(),v.getDesc()});
+                        pessoas.add(v);
+                    }      
                 } 
             }
             model.fireTableDataChanged();
@@ -68,7 +79,7 @@ public class EditaVertice extends javax.swing.JFrame {
     private void initComponents() {
 
         jLabel6 = new javax.swing.JLabel();
-        btnAlterar = new javax.swing.JButton();
+        btnPesquisar = new javax.swing.JButton();
         btnFechar = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
@@ -78,15 +89,15 @@ public class EditaVertice extends javax.swing.JFrame {
         jLabel6.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
         jLabel6.setForeground(new java.awt.Color(0, 0, 204));
         jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel6.setText("EDITA VERTICE");
+        jLabel6.setText("SELECIONE O GRUPO DE PESSOAS:");
         jLabel6.setToolTipText("");
 
-        btnAlterar.setFont(new java.awt.Font("Calibri", 1, 11)); // NOI18N
-        btnAlterar.setText("ALTERAR");
-        btnAlterar.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnAlterar.addActionListener(new java.awt.event.ActionListener() {
+        btnPesquisar.setFont(new java.awt.Font("Calibri", 1, 11)); // NOI18N
+        btnPesquisar.setText("PESQUISAR");
+        btnPesquisar.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnPesquisar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAlterarActionPerformed(evt);
+                btnPesquisarActionPerformed(evt);
             }
         });
 
@@ -103,14 +114,14 @@ public class EditaVertice extends javax.swing.JFrame {
 
             },
             new String [] {
-                "ID", "NOME", "PESO", "COR"
+                "ID", "NOME"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.Double.class, java.lang.Integer.class
+                java.lang.Integer.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, true, true
+                false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -121,8 +132,11 @@ public class EditaVertice extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
+        jTable1.setColumnSelectionAllowed(true);
         jTable1.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        jTable1.getTableHeader().setReorderingAllowed(false);
         jScrollPane1.setViewportView(jTable1);
+        jTable1.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -135,7 +149,7 @@ public class EditaVertice extends javax.swing.JFrame {
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 478, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(btnAlterar)
+                        .addComponent(btnPesquisar)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnFechar)))
                 .addContainerGap())
@@ -148,56 +162,60 @@ public class EditaVertice extends javax.swing.JFrame {
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 245, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnAlterar)
+                    .addComponent(btnPesquisar)
                     .addComponent(btnFechar))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        btnAlterar.getAccessibleContext().setAccessibleName("");
+        btnPesquisar.getAccessibleContext().setAccessibleName("");
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnAlterarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAlterarActionPerformed
+    private void btnPesquisarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPesquisarActionPerformed
         // TODO add your handling code here:
-        int index = jTable1.getSelectedRow();
+        //int index = jTable1.getSelectedRow();
+        int indexes[] = jTable1.getSelectedRows();
         
-        if(index == -1)
-        {
-            JOptionPane.showMessageDialog(null, "Selecione um vertice!");
-            return;
-        }
-        Vertice v = vertices.get(index);
-        Integer cor =  Integer.parseInt(jTable1.getValueAt(index, 3).toString());
-        Double peso =  Double.parseDouble(jTable1.getValueAt(index, 2).toString());
-
-        if(cor == v.getCor() && peso == v.getPeso())
-        {
-            JOptionPane.showMessageDialog(null, "Valores não alterados");
-            return;
-        }
-        v.setCor(cor);
-        v.setPeso(peso);
         try
         {
-            if(!conexao.getClient().editaVertice(v))
+            List<Vertice> assistidos = new ArrayList<>();
+            StringBuilder builder = new StringBuilder("<html>"); 
+            for(int index : indexes)
             {
-                JOptionPane.showMessageDialog(null, "Não foi possível editar o vértice!");
+                //Pega todos os filmes assistidos:
+                Vertice v = pessoas.get(index);
+                List<Vertice> vizinhos = conexao.getClient().getVizinhos(v);
+                for(Vertice vert : vizinhos)
+                {
+                    if(vert.getCor() == ClienteSD.TYPE_MOVIE && !assistidos.contains(vert))
+                    {
+                        assistidos.add(vert);
+                        builder.append(vert.getDesc());
+                        builder.append("<br>");
+                    }
+                }
+            }
+            builder.append("</html>");
+            
+            if(assistidos.size() <= 0)
+            {
+                JOptionPane.showMessageDialog(null, "Nenhum resultado encontrado!");
             }
             else
             {
-                JOptionPane.showMessageDialog(null, "Vertice Editado!");
-                loadTabela();
+                JOptionPane.showMessageDialog(null, builder.toString(), "Resultados:", JOptionPane.INFORMATION_MESSAGE);
             }
+            
         }
         catch(Exception e)
         {
-            JOptionPane.showMessageDialog(null, "Não foi possível editar o vértice!");
+            JOptionPane.showMessageDialog(null, "Não foi possível remover a entrada!");
         }
         
         
         
-    }//GEN-LAST:event_btnAlterarActionPerformed
+    }//GEN-LAST:event_btnPesquisarActionPerformed
 
     private void btnFecharActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFecharActionPerformed
         // TODO add your handling code here:
@@ -208,8 +226,8 @@ public class EditaVertice extends javax.swing.JFrame {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnAlterar;
     private javax.swing.JButton btnFechar;
+    private javax.swing.JButton btnPesquisar;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;

@@ -21,6 +21,7 @@ public class RemoveAresta extends javax.swing.JFrame {
 
     ClienteSD conexao;
     List<Aresta> arestas;
+    List<Vertice> vertices;
     /**
      * Creates new form InsereVertice
      */
@@ -37,13 +38,16 @@ public class RemoveAresta extends javax.swing.JFrame {
         try
         {
             arestas = conexao.getClient().getArestas(true);
+            vertices = conexao.getClient().getVertices(true);
             DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
             model.setRowCount(0);
             if(arestas != null && arestas.size() > 0)
             {
                 for(Aresta v : arestas)
                 {
-                     model.addRow(new Object[]{v.getDesc(), v.getVertice1(),v.getVertice2(),v.getPeso(),v.isDirecionado()});
+                    Vertice v1 = vertices.stream().filter(f -> f.getId() == v.getVertice1()).findFirst().get();
+                    Vertice v2 = vertices.stream().filter(f -> f.getId() == v.getVertice2()).findFirst().get();
+                    model.addRow(new Object[]{v1.getDesc(),v2.getDesc(),v.getPeso()});
                 }
             }
             model.fireTableDataChanged();
@@ -77,7 +81,7 @@ public class RemoveAresta extends javax.swing.JFrame {
         jLabel6.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
         jLabel6.setForeground(new java.awt.Color(0, 0, 204));
         jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel6.setText("REMOVE ARESTAS");
+        jLabel6.setText("REMOVE ASSOCIAÇÃO");
         jLabel6.setToolTipText("");
 
         btnRemover.setFont(new java.awt.Font("Calibri", 1, 11)); // NOI18N
@@ -102,14 +106,14 @@ public class RemoveAresta extends javax.swing.JFrame {
 
             },
             new String [] {
-                "NOME", "VERTICE1", "VERTICE2", "PESO", "DIRECIONADO"
+                "FILME", "PESSOA", "NOTA"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.Double.class, java.lang.Boolean.class
+                java.lang.String.class, java.lang.String.class, java.lang.Double.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false
+                false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {

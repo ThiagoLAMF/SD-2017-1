@@ -321,7 +321,7 @@ public class ServerUI extends javax.swing.JFrame {
 
         System.out.println("Ligando servidores...");
     
-        serversRaft[0] = RaftServer.criaServer(cluster, txtServidor1.getText(), Integer.parseInt(txtPortaCopyCat1.getText()));
+        /*serversRaft[0] = RaftServer.criaServer(cluster, txtServidor1.getText(), Integer.parseInt(txtPortaCopyCat1.getText()));
         serversRaft[1] = RaftServer.adicionaServer(cluster, txtServidor2.getText(), Integer.parseInt(txtPortaCopyCat2.getText()));
         serversRaft[2] = RaftServer.adicionaServer(cluster, txtServidor3.getText(), Integer.parseInt(txtPortaCopyCat3.getText()));
 
@@ -341,9 +341,9 @@ public class ServerUI extends javax.swing.JFrame {
  
         System.out.println("ANTES COMANDO.");
         c1.submit(new PutCommand("inserir", 12));
-        c1.submit(new PutCommand("inserir", 13));
+        c1.submit(new PutCommand("inserir", 13));*/
         
-        //server[0].IniciaServer();
+        server[0].IniciaServer();
         //server[1].IniciaServer();
         //server[2].IniciaServer();
         txtStatusServer.setText("Servidores iniciados.");
@@ -358,13 +358,13 @@ public class ServerUI extends javax.swing.JFrame {
         cluster.add(new Address(txtServidor3.getText(),Integer.parseInt(txtPortaCopyCat3.getText())));
         
         server[0].setPorta(Integer.parseInt(txtPorta1.getText()));
-        server[1].setPorta(Integer.parseInt(txtPorta2.getText()));
-        server[2].setPorta(Integer.parseInt(txtPorta3.getText()));
+        //server[1].setPorta(Integer.parseInt(txtPorta2.getText()));
+        //server[2].setPorta(Integer.parseInt(txtPorta3.getText()));
         
         idCluster = Integer.parseInt(txtIdCluster.getText());
         server[0].setId(idCluster);
-        server[1].setId(idCluster);
-        server[2].setId(idCluster);
+        //server[1].setId(idCluster);
+        //server[2].setId(idCluster);
     }//GEN-LAST:event_btnSetarActionPerformed
 
     private void txtPorta1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtPorta1ActionPerformed

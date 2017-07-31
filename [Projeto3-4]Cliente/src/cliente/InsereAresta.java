@@ -7,7 +7,13 @@ package cliente;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
+import org.apache.thrift.TException;
 import shared.Aresta;
 import shared.Vertice;
 
@@ -18,6 +24,9 @@ import shared.Vertice;
 public class InsereAresta extends javax.swing.JFrame {
 
     ClienteSD conexao;
+    List<Vertice> vertices;
+    List<Vertice> filmes;
+    List<Vertice> pessoas;
     /**
      * Creates new form InsereVertice
      */
@@ -26,6 +35,43 @@ public class InsereAresta extends javax.swing.JFrame {
         this.conexao = conexao;
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         this.setLocation(dim.width/2-this.getSize().width/2, dim.height/2-this.getSize().height/2);
+        CarregaCombos();
+    }
+    
+    private void CarregaCombos()
+    {
+        try
+        {
+            vertices = conexao.getClient().getVertices(true);
+            filmes = new ArrayList<>();
+            pessoas = new ArrayList<>();
+            
+            DefaultComboBoxModel modeloFilmes = (DefaultComboBoxModel) cbFilme.getModel();
+            modeloFilmes.removeAllElements();
+            
+            DefaultComboBoxModel modeloPessoa = (DefaultComboBoxModel) cbPessoa.getModel();
+            modeloPessoa.removeAllElements();
+            
+            for(Vertice v : vertices)
+            {
+                switch(v.getCor())
+                {
+                    case ClienteSD.TYPE_MOVIE:
+                        filmes.add(v);
+                        modeloFilmes.addElement(v.getDesc());
+                        break;
+                    case ClienteSD.TYPE_USER:
+                        pessoas.add(v);
+                        modeloPessoa.addElement(v.getDesc());
+                        break;
+                }
+            }
+
+        } catch (TException ex)
+        {
+            JOptionPane.showMessageDialog(null, "Não foi possível recuperar os dados do banco de dados!");
+        }
+    
     }
 
     /**
@@ -38,47 +84,28 @@ public class InsereAresta extends javax.swing.JFrame {
     private void initComponents() {
 
         buttonGroup1 = new javax.swing.ButtonGroup();
-        jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
-        txtVertice1 = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
         btnInserir = new javax.swing.JButton();
-        txtVertice2 = new javax.swing.JTextField();
-        txtPeso = new javax.swing.JTextField();
         btnFechar = new javax.swing.JButton();
-        jLabel7 = new javax.swing.JLabel();
-        txtNome = new javax.swing.JTextField();
-        rbSim = new javax.swing.JRadioButton();
-        rbNao = new javax.swing.JRadioButton();
+        cbFilme = new javax.swing.JComboBox();
+        jLabel8 = new javax.swing.JLabel();
+        cbPessoa = new javax.swing.JComboBox();
+        jLabel9 = new javax.swing.JLabel();
+        txtNota = new javax.swing.JTextField();
+        jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jLabel2.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
-        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel2.setText("VERTICE 2");
-        jLabel2.setToolTipText("");
-
         jLabel3.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel3.setText("VERTICE 1");
+        jLabel3.setText("FILME:");
         jLabel3.setToolTipText("");
-
-        jLabel4.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
-        jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel4.setText("PESO");
-        jLabel4.setToolTipText("");
-
-        jLabel5.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
-        jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel5.setText("DIRECIONADO");
-        jLabel5.setToolTipText("");
 
         jLabel6.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
         jLabel6.setForeground(new java.awt.Color(0, 0, 204));
         jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel6.setText("INSERE ARESTA");
+        jLabel6.setText("ASSOCIAR PESSOA/FILME");
         jLabel6.setToolTipText("");
 
         btnInserir.setFont(new java.awt.Font("Calibri", 1, 11)); // NOI18N
@@ -98,51 +125,49 @@ public class InsereAresta extends javax.swing.JFrame {
             }
         });
 
-        jLabel7.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
-        jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel7.setText("NOME");
-        jLabel7.setToolTipText("");
+        cbFilme.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
-        buttonGroup1.add(rbSim);
-        rbSim.setText("SIM");
+        jLabel8.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
+        jLabel8.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel8.setText("PESSOA:");
+        jLabel8.setToolTipText("");
 
-        buttonGroup1.add(rbNao);
-        rbNao.setText("NAO");
+        cbPessoa.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        jLabel9.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
+        jLabel9.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel9.setText("NOTA:");
+        jLabel9.setToolTipText("");
+
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel1.setText("Para associar um ator ao filme deixe a nota em branco.");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, 379, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(cbFilme, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(txtNota))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(cbPessoa, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(btnInserir)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnFechar))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(rbSim)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(rbNao))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                    .addComponent(jLabel7, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 118, Short.MAX_VALUE)
-                                    .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(txtVertice1, javax.swing.GroupLayout.DEFAULT_SIZE, 237, Short.MAX_VALUE)
-                                    .addComponent(txtVertice2, javax.swing.GroupLayout.DEFAULT_SIZE, 237, Short.MAX_VALUE)
-                                    .addComponent(txtPeso, javax.swing.GroupLayout.DEFAULT_SIZE, 237, Short.MAX_VALUE)
-                                    .addComponent(txtNome, javax.swing.GroupLayout.DEFAULT_SIZE, 237, Short.MAX_VALUE))))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addComponent(btnFechar)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -152,28 +177,22 @@ public class InsereAresta extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(txtVertice1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(cbFilme, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(txtVertice2))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(jLabel8)
+                    .addComponent(cbPessoa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel4)
-                    .addComponent(txtPeso))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(jLabel9)
+                    .addComponent(txtNota, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtNome)
-                    .addComponent(jLabel7))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel5)
-                    .addComponent(rbSim)
-                    .addComponent(rbNao))
-                .addGap(19, 19, 19)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnInserir)
-                    .addComponent(btnFechar)))
+                    .addComponent(btnFechar)
+                    .addComponent(btnInserir))
+                .addContainerGap())
         );
 
         btnInserir.getAccessibleContext().setAccessibleName("");
@@ -189,50 +208,37 @@ public class InsereAresta extends javax.swing.JFrame {
 
     private void btnInserirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInserirActionPerformed
         // TODO add your handling code here:
-        int id1,id2;
         double peso = 2.0;
         boolean direcionado = false;
 
         try
         {
-            id1 = Integer.parseInt(txtVertice1.getText());
-            id2 = Integer.parseInt(txtVertice2.getText());
-            peso = Double.parseDouble(txtPeso.getText());
+            peso = Double.parseDouble(txtNota.getText());
         }
         catch(Exception e)
         {
-            JOptionPane.showMessageDialog(null, "Verifique os campos digitados!");
-            e.printStackTrace();
-            return;
+            peso = -1;
         }
-        String desc = txtVertice2.getText();
-        if(desc == null || desc.equals(""))
-        {
-            JOptionPane.showMessageDialog(null, "Verifique os campos digitados!");
-            return;
-        }
-        
-        if(rbSim.isSelected()) direcionado = true;
         
         Aresta a = new Aresta();
-        a.setDesc(desc);
+        a.setDesc("");
         a.setPeso(peso);
-        a.setVertice1(id1);
-        a.setVertice2(id2);
+        a.setVertice1(filmes.get(cbFilme.getSelectedIndex()).getId());
+        a.setVertice2(pessoas.get(cbPessoa.getSelectedIndex()).getId());
         try
         {
             if(!conexao.getClient().insereAresta(a))
             {
-                JOptionPane.showMessageDialog(null, "Não foi possível inserir a aresta! Verifique o id e descrição!");
+                JOptionPane.showMessageDialog(null, "Não foi possível inserir! Verifique os campos!");
             }
             else
             {
-                JOptionPane.showMessageDialog(null, "Aresta Inserida!");
+                JOptionPane.showMessageDialog(null, "Entrada Inserida!");
             }
         }
         catch(Exception e)
         {
-            JOptionPane.showMessageDialog(null, "Não foi possível inserir a aresta!");
+            JOptionPane.showMessageDialog(null, "Não foi possível inserir!");
         }
         
         
@@ -245,17 +251,13 @@ public class InsereAresta extends javax.swing.JFrame {
     private javax.swing.JButton btnFechar;
     private javax.swing.JButton btnInserir;
     private javax.swing.ButtonGroup buttonGroup1;
-    private javax.swing.JLabel jLabel2;
+    private javax.swing.JComboBox cbFilme;
+    private javax.swing.JComboBox cbPessoa;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
-    private javax.swing.JRadioButton rbNao;
-    private javax.swing.JRadioButton rbSim;
-    private javax.swing.JTextField txtNome;
-    private javax.swing.JTextField txtPeso;
-    private javax.swing.JTextField txtVertice1;
-    private javax.swing.JTextField txtVertice2;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
+    private javax.swing.JTextField txtNota;
     // End of variables declaration//GEN-END:variables
 }

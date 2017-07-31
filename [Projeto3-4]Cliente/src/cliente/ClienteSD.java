@@ -15,6 +15,9 @@ import org.apache.thrift.protocol.TBinaryProtocol;
 import org.apache.thrift.protocol.TProtocol;
 
 public class ClienteSD {
+    
+    public static final int TYPE_MOVIE  = 1;
+    public static final int TYPE_USER  = 2;
     private GrafoDB.Client client;
     private TTransport transport;
     
@@ -24,7 +27,7 @@ public class ClienteSD {
         {
             
       
-            transport = new TSocket("localhost", 9090);
+            transport = new TSocket("localhost", 9000);
             transport.open();
      
             TProtocol protocol = new  TBinaryProtocol(transport);

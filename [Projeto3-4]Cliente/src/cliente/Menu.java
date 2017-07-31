@@ -39,33 +39,34 @@ public class Menu extends javax.swing.JFrame {
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
-        btnInserirVertice = new javax.swing.JButton();
+        btnInserirFilme = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
-        jButton6 = new javax.swing.JButton();
         jButton7 = new javax.swing.JButton();
         jButton8 = new javax.swing.JButton();
         jButton9 = new javax.swing.JButton();
         jButton10 = new javax.swing.JButton();
         jButton11 = new javax.swing.JButton();
         btnResetar = new javax.swing.JButton();
+        btnInserirPessoa = new javax.swing.JButton();
+        btnFilmesAssistidos = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jLabel1.setFont(new java.awt.Font("Calibri", 1, 36)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("GrafoDB");
+        jLabel1.setText("FilmeBook");
 
-        btnInserirVertice.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
-        btnInserirVertice.setText("INSERIR VERTICE");
-        btnInserirVertice.addActionListener(new java.awt.event.ActionListener() {
+        btnInserirFilme.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
+        btnInserirFilme.setText("INSERIR FILME");
+        btnInserirFilme.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnInserirVerticeActionPerformed(evt);
+                btnInserirFilmeActionPerformed(evt);
             }
         });
 
         jButton4.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
-        jButton4.setText("REMOVER VERTICE");
+        jButton4.setText("REMOVER FILME/PESSOA");
         jButton4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton4ActionPerformed(evt);
@@ -73,23 +74,15 @@ public class Menu extends javax.swing.JFrame {
         });
 
         jButton5.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
-        jButton5.setText("INSERIR ARESTA");
+        jButton5.setText("INSERIR ASSOCIAÇÃO");
         jButton5.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton5ActionPerformed(evt);
             }
         });
 
-        jButton6.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
-        jButton6.setText("EDITAR VERTICE");
-        jButton6.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton6ActionPerformed(evt);
-            }
-        });
-
         jButton7.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
-        jButton7.setText("EDITAR ARESTA");
+        jButton7.setText("EDITAR ASSOCIAÇÃO");
         jButton7.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton7ActionPerformed(evt);
@@ -97,7 +90,7 @@ public class Menu extends javax.swing.JFrame {
         });
 
         jButton8.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
-        jButton8.setText("REMOVER ARESTA");
+        jButton8.setText("REMOVER ASSOCIAÇÃO");
         jButton8.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton8ActionPerformed(evt);
@@ -136,28 +129,45 @@ public class Menu extends javax.swing.JFrame {
             }
         });
 
+        btnInserirPessoa.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
+        btnInserirPessoa.setText("INSERIR PESSOA");
+        btnInserirPessoa.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnInserirPessoaActionPerformed(evt);
+            }
+        });
+
+        btnFilmesAssistidos.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
+        btnFilmesAssistidos.setText("FILMES ASSISTIDOS");
+        btnFilmesAssistidos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnFilmesAssistidosActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 580, Short.MAX_VALUE)
                 .addContainerGap())
-            .addGroup(layout.createSequentialGroup()
-                .addGap(221, 221, 221)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jButton7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jButton8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jButton4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnInserirVertice, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnInserirFilme, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jButton5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jButton9, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jButton10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jButton11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnResetar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(202, Short.MAX_VALUE))
+                    .addComponent(btnResetar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnInserirPessoa, javax.swing.GroupLayout.PREFERRED_SIZE, 227, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnFilmesAssistidos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(184, 184, 184))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -165,7 +175,9 @@ public class Menu extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnInserirVertice)
+                .addComponent(btnInserirFilme)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnInserirPessoa)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton5)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -173,9 +185,9 @@ public class Menu extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton8)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton6)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton7)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnFilmesAssistidos)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton9)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -190,16 +202,16 @@ public class Menu extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnInserirVerticeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInserirVerticeActionPerformed
+    private void btnInserirFilmeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInserirFilmeActionPerformed
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new InsereVertice(conexao).setVisible(true);
+                new InsereFilme(conexao).setVisible(true);
             }
         });
         
-    }//GEN-LAST:event_btnInserirVerticeActionPerformed
+    }//GEN-LAST:event_btnInserirFilmeActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -218,14 +230,6 @@ public class Menu extends javax.swing.JFrame {
             }
         });
     }//GEN-LAST:event_jButton5ActionPerformed
-
-    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new EditaVertice(conexao).setVisible(true);
-            }
-        });
-    }//GEN-LAST:event_jButton6ActionPerformed
 
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
          java.awt.EventQueue.invokeLater(new Runnable() {
@@ -283,6 +287,26 @@ public class Menu extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnResetarActionPerformed
 
+    private void btnInserirPessoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInserirPessoaActionPerformed
+        // TODO add your handling code here:
+         /* Create and display the form */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new InserePessoa(conexao).setVisible(true);
+            }
+        });
+    }//GEN-LAST:event_btnInserirPessoaActionPerformed
+
+    private void btnFilmesAssistidosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFilmesAssistidosActionPerformed
+        // TODO add your handling code here:
+         /* Create and display the form */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new FilmesAssistidos(conexao).setVisible(true);
+            }
+        });
+    }//GEN-LAST:event_btnFilmesAssistidosActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -320,13 +344,14 @@ public class Menu extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnInserirVertice;
+    private javax.swing.JButton btnFilmesAssistidos;
+    private javax.swing.JButton btnInserirFilme;
+    private javax.swing.JButton btnInserirPessoa;
     private javax.swing.JButton btnResetar;
     private javax.swing.JButton jButton10;
     private javax.swing.JButton jButton11;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
-    private javax.swing.JButton jButton6;
     private javax.swing.JButton jButton7;
     private javax.swing.JButton jButton8;
     private javax.swing.JButton jButton9;

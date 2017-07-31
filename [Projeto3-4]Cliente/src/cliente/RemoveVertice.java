@@ -44,7 +44,11 @@ public class RemoveVertice extends javax.swing.JFrame {
             {
                 for(Vertice v : vertices)
                 {
-                     model.addRow(new Object[]{v.getId(),v.getDesc(), v.getPeso(),v.getCor()});
+                    String tipoVertice = "";
+                    if(v.getCor() == ClienteSD.TYPE_MOVIE) tipoVertice = "Filme";
+                    if(v.getCor() == ClienteSD.TYPE_USER) tipoVertice = "Pessoa";
+                    
+                     model.addRow(new Object[]{v.getId(),v.getDesc(), tipoVertice});
                 } 
             }
             model.fireTableDataChanged();
@@ -78,7 +82,7 @@ public class RemoveVertice extends javax.swing.JFrame {
         jLabel6.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
         jLabel6.setForeground(new java.awt.Color(0, 0, 204));
         jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel6.setText("REMOVE VERTICE");
+        jLabel6.setText("REMOVE FILME/PESSOA");
         jLabel6.setToolTipText("");
 
         btnRemover.setFont(new java.awt.Font("Calibri", 1, 11)); // NOI18N
@@ -103,14 +107,14 @@ public class RemoveVertice extends javax.swing.JFrame {
 
             },
             new String [] {
-                "ID", "NOME", "PESO", "COR"
+                "ID", "NOME", "TIPO"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.Double.class, java.lang.Integer.class
+                java.lang.Integer.class, java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false
+                false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -122,6 +126,7 @@ public class RemoveVertice extends javax.swing.JFrame {
             }
         });
         jTable1.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        jTable1.getTableHeader().setReorderingAllowed(false);
         jScrollPane1.setViewportView(jTable1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -164,7 +169,7 @@ public class RemoveVertice extends javax.swing.JFrame {
         
         if(index == -1)
         {
-            JOptionPane.showMessageDialog(null, "Selecione um vertice!");
+            JOptionPane.showMessageDialog(null, "Selecione uma entrada!");
             return;
         }
         Vertice v = vertices.get(index);
@@ -172,17 +177,17 @@ public class RemoveVertice extends javax.swing.JFrame {
         {
             if(!conexao.getClient().removeVertice(v))
             {
-                JOptionPane.showMessageDialog(null, "Não foi possível remover o vértice!");
+                JOptionPane.showMessageDialog(null, "Não foi possível remover a entrada!");
             }
             else
             {
-                JOptionPane.showMessageDialog(null, "Vertice Removido!");
+                JOptionPane.showMessageDialog(null, "Entrada Removida!");
                 loadTabela();
             }
         }
         catch(Exception e)
         {
-            JOptionPane.showMessageDialog(null, "Não foi possível remover o vértice!");
+            JOptionPane.showMessageDialog(null, "Não foi possível remover a entrada!");
         }
         
         

@@ -25,24 +25,25 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="jLabel1" max="32767" attributes="0"/>
+              <Component id="jLabel1" pref="580" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
-          <Group type="102" alignment="0" attributes="0">
-              <EmptySpace min="-2" pref="221" max="-2" attributes="0"/>
+          <Group type="102" alignment="1" attributes="0">
+              <EmptySpace max="32767" attributes="0"/>
               <Group type="103" groupAlignment="0" max="-2" attributes="0">
                   <Component id="jButton7" max="32767" attributes="0"/>
-                  <Component id="jButton6" max="32767" attributes="0"/>
                   <Component id="jButton8" max="32767" attributes="0"/>
                   <Component id="jButton4" max="32767" attributes="0"/>
-                  <Component id="btnInserirVertice" max="32767" attributes="0"/>
+                  <Component id="btnInserirFilme" max="32767" attributes="0"/>
                   <Component id="jButton5" alignment="0" max="32767" attributes="0"/>
                   <Component id="jButton9" alignment="1" max="32767" attributes="0"/>
                   <Component id="jButton10" alignment="0" max="32767" attributes="0"/>
                   <Component id="jButton11" max="32767" attributes="0"/>
                   <Component id="btnResetar" alignment="1" max="32767" attributes="0"/>
+                  <Component id="btnInserirPessoa" alignment="0" min="-2" pref="227" max="-2" attributes="0"/>
+                  <Component id="btnFilmesAssistidos" alignment="0" max="32767" attributes="0"/>
               </Group>
-              <EmptySpace pref="202" max="32767" attributes="0"/>
+              <EmptySpace min="-2" pref="184" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -52,7 +53,9 @@
               <EmptySpace max="-2" attributes="0"/>
               <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
-              <Component id="btnInserirVertice" min="-2" max="-2" attributes="0"/>
+              <Component id="btnInserirFilme" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="btnInserirPessoa" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="jButton5" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
@@ -60,9 +63,9 @@
               <EmptySpace max="-2" attributes="0"/>
               <Component id="jButton8" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="jButton6" min="-2" max="-2" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
               <Component id="jButton7" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="btnFilmesAssistidos" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="jButton9" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
@@ -83,18 +86,18 @@
           <Font name="Calibri" size="36" style="1"/>
         </Property>
         <Property name="horizontalAlignment" type="int" value="0"/>
-        <Property name="text" type="java.lang.String" value="GrafoDB"/>
+        <Property name="text" type="java.lang.String" value="FilmeBook"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JButton" name="btnInserirVertice">
+    <Component class="javax.swing.JButton" name="btnInserirFilme">
       <Properties>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Calibri" size="18" style="1"/>
         </Property>
-        <Property name="text" type="java.lang.String" value="INSERIR VERTICE"/>
+        <Property name="text" type="java.lang.String" value="INSERIR FILME"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnInserirVerticeActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnInserirFilmeActionPerformed"/>
       </Events>
     </Component>
     <Component class="javax.swing.JButton" name="jButton4">
@@ -102,7 +105,7 @@
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Calibri" size="18" style="1"/>
         </Property>
-        <Property name="text" type="java.lang.String" value="REMOVER VERTICE"/>
+        <Property name="text" type="java.lang.String" value="REMOVER FILME/PESSOA"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton4ActionPerformed"/>
@@ -113,21 +116,10 @@
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Calibri" size="18" style="1"/>
         </Property>
-        <Property name="text" type="java.lang.String" value="INSERIR ARESTA"/>
+        <Property name="text" type="java.lang.String" value="INSERIR ASSOCIA&#xc7;&#xc3;O"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton5ActionPerformed"/>
-      </Events>
-    </Component>
-    <Component class="javax.swing.JButton" name="jButton6">
-      <Properties>
-        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-          <Font name="Calibri" size="18" style="1"/>
-        </Property>
-        <Property name="text" type="java.lang.String" value="EDITAR VERTICE"/>
-      </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton6ActionPerformed"/>
       </Events>
     </Component>
     <Component class="javax.swing.JButton" name="jButton7">
@@ -135,7 +127,7 @@
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Calibri" size="18" style="1"/>
         </Property>
-        <Property name="text" type="java.lang.String" value="EDITAR ARESTA"/>
+        <Property name="text" type="java.lang.String" value="EDITAR ASSOCIA&#xc7;&#xc3;O"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton7ActionPerformed"/>
@@ -146,7 +138,7 @@
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Calibri" size="18" style="1"/>
         </Property>
-        <Property name="text" type="java.lang.String" value="REMOVER ARESTA"/>
+        <Property name="text" type="java.lang.String" value="REMOVER ASSOCIA&#xc7;&#xc3;O"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton8ActionPerformed"/>
@@ -194,6 +186,28 @@
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnResetarActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="btnInserirPessoa">
+      <Properties>
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+          <Font name="Calibri" size="18" style="1"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="INSERIR PESSOA"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnInserirPessoaActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="btnFilmesAssistidos">
+      <Properties>
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+          <Font name="Calibri" size="18" style="1"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="FILMES ASSISTIDOS"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnFilmesAssistidosActionPerformed"/>
       </Events>
     </Component>
   </SubComponents>
