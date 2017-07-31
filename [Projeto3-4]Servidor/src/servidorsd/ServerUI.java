@@ -5,7 +5,20 @@
  */
 package servidorsd;
 
+import io.atomix.catalyst.transport.Address;
+import io.atomix.copycat.client.CopycatClient;
+import io.atomix.copycat.server.CopycatServer;
 import java.awt.Color;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import javax.swing.event.ChangeEvent;
+import raft.PutCommand;
+import raft.RaftServer;
+import shared.Aresta;
+import shared.Grafo;
+import shared.Vertice;
 
 /**
  *
@@ -13,21 +26,22 @@ import java.awt.Color;
  */
 public class ServerUI extends javax.swing.JFrame {
 
-    /**
-     * Creates new form ServerU
-     */
-    private ServidorSD server = null;
-    private String caminho = "";
-    private int porta;
+    private ServidorSD[] server; //servidores thrift
+    private CopycatServer[] serversRaft; //servidores raft
+    
+    Collection<Address> cluster; //conjunto de servidores raft
+    int idCluster;
     public ServerUI() {
         initComponents();
-        caminho = "C:\\GrafoDB\\grafo.txt";
-        txtSalva.setText(caminho);
-        this.server = server;
-        porta = 9090;
-        txtPorta.setText("9090");
-        server = new ServidorSD(caminho,porta);
         
+        idCluster = 0;
+        cluster = new ArrayList<>();
+        serversRaft = new CopycatServer[3];
+        
+        server = new ServidorSD[3];
+        server[0] = new ServidorSD();
+        server[1] = new ServidorSD();
+        server[2] = new ServidorSD();
     }
     
     public static void main(String[] args)
@@ -52,13 +66,26 @@ public class ServerUI extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         txtStatusServer = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
-        txtSalva = new javax.swing.JTextField();
-        jLabel3 = new javax.swing.JLabel();
         btnLigar = new javax.swing.JButton();
         btnSetar = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        txtServidor1 = new javax.swing.JTextField();
+        txtPorta1 = new javax.swing.JTextField();
+        txtPorta2 = new javax.swing.JTextField();
+        txtServidor2 = new javax.swing.JTextField();
+        jLabel9 = new javax.swing.JLabel();
+        txtPorta3 = new javax.swing.JTextField();
+        txtServidor3 = new javax.swing.JTextField();
+        jLabel11 = new javax.swing.JLabel();
+        txtPortaCopyCat1 = new javax.swing.JTextField();
+        txtPortaCopyCat2 = new javax.swing.JTextField();
+        txtPortaCopyCat3 = new javax.swing.JTextField();
+        jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        txtPorta = new javax.swing.JTextField();
+        jLabel7 = new javax.swing.JLabel();
+        txtIdCluster = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -80,16 +107,6 @@ public class ServerUI extends javax.swing.JFrame {
             }
         });
 
-        txtSalva.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtSalvaActionPerformed(evt);
-            }
-        });
-
-        jLabel3.setFont(new java.awt.Font("Calibri", 1, 14)); // NOI18N
-        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel3.setText("Salva grafo em:");
-
         btnLigar.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
         btnLigar.setText("LIGAR");
         btnLigar.setToolTipText("");
@@ -110,15 +127,75 @@ public class ServerUI extends javax.swing.JFrame {
 
         jLabel2.setFont(new java.awt.Font("Calibri", 1, 14)); // NOI18N
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel2.setText("AVISO: Caminho deve ser setado antes de iniciar o servidor.");
+        jLabel2.setText("AVISO: Clique em setar antes de ligar o servidor.");
 
-        jLabel4.setFont(new java.awt.Font("Calibri", 1, 14)); // NOI18N
-        jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel4.setText("Porta");
+        jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel5.setText("Informações do cluster:");
 
-        txtPorta.addActionListener(new java.awt.event.ActionListener() {
+        jLabel6.setText("Endereço Servidor 1:");
+
+        txtServidor1.setText("localhost");
+
+        txtPorta1.setText("9000");
+        txtPorta1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtPortaActionPerformed(evt);
+                txtPorta1ActionPerformed(evt);
+            }
+        });
+
+        txtPorta2.setText("9001");
+        txtPorta2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtPorta2ActionPerformed(evt);
+            }
+        });
+
+        txtServidor2.setText("localhost");
+
+        jLabel9.setText("Endereço Servidor 2:");
+
+        txtPorta3.setText("9002");
+        txtPorta3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtPorta3ActionPerformed(evt);
+            }
+        });
+
+        txtServidor3.setText("localhost");
+
+        jLabel11.setText("Endereço Servidor 3:");
+
+        txtPortaCopyCat1.setText("8000");
+        txtPortaCopyCat1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtPortaCopyCat1ActionPerformed(evt);
+            }
+        });
+
+        txtPortaCopyCat2.setText("8001");
+        txtPortaCopyCat2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtPortaCopyCat2ActionPerformed(evt);
+            }
+        });
+
+        txtPortaCopyCat3.setText("8002");
+        txtPortaCopyCat3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtPortaCopyCat3ActionPerformed(evt);
+            }
+        });
+
+        jLabel3.setText("Porta GrafoDB");
+
+        jLabel4.setText("Porta CopyCat");
+
+        jLabel7.setText("ID do cluster:");
+
+        txtIdCluster.setText("0");
+        txtIdCluster.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtIdClusterActionPerformed(evt);
             }
         });
 
@@ -126,31 +203,63 @@ public class ServerUI extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 491, Short.MAX_VALUE)
+            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 552, Short.MAX_VALUE)
             .addComponent(txtStatusServer, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtSalva, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(189, 189, 189)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btnLigar, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jButton1)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(txtPortaCopyCat2, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                            .addGroup(layout.createSequentialGroup()
+                                                .addComponent(jLabel9)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                .addComponent(txtServidor2, javax.swing.GroupLayout.PREFERRED_SIZE, 181, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                .addComponent(txtPorta2))
+                                            .addGroup(layout.createSequentialGroup()
+                                                .addComponent(jLabel11)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                .addComponent(txtServidor3, javax.swing.GroupLayout.PREFERRED_SIZE, 181, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                .addComponent(txtPorta3, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                            .addGroup(layout.createSequentialGroup()
+                                                .addComponent(jLabel6)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                .addComponent(txtServidor1, javax.swing.GroupLayout.PREFERRED_SIZE, 181, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                    .addComponent(txtPorta1)
+                                                    .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addGroup(layout.createSequentialGroup()
+                                                .addGap(34, 34, 34)
+                                                .addComponent(txtPortaCopyCat1, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                    .addComponent(txtPortaCopyCat3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                    .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)))))))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(223, 223, 223)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jButton1)
+                                    .addComponent(btnLigar, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(btnSetar, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jLabel7)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(txtIdCluster, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtPorta, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(btnSetar, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(186, 186, 186))
+                        .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -159,18 +268,38 @@ public class ServerUI extends javax.swing.JFrame {
                 .addGap(29, 29, 29)
                 .addComponent(txtStatusServer)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addComponent(jLabel5)
+                .addGap(1, 1, 1)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(txtSalva, javax.swing.GroupLayout.DEFAULT_SIZE, 31, Short.MAX_VALUE))
+                    .addComponent(jLabel4))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel4)
-                    .addComponent(txtPorta, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel6)
+                    .addComponent(txtServidor1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtPorta1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtPortaCopyCat1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel9)
+                    .addComponent(txtServidor2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtPorta2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtPortaCopyCat2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel11)
+                    .addComponent(txtServidor3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtPorta3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtPortaCopyCat3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 15, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtIdCluster, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel7))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnSetar)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 31, Short.MAX_VALUE)
+                .addGap(1, 1, 1)
                 .addComponent(jLabel2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnLigar)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton1)
@@ -181,31 +310,90 @@ public class ServerUI extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        serversRaft[0].shutdown();
+        serversRaft[1].shutdown();
+        serversRaft[2].shutdown();
         System.exit(0);
     }//GEN-LAST:event_jButton1ActionPerformed
 
-    private void txtSalvaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtSalvaActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtSalvaActionPerformed
-
     private void btnLigarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLigarActionPerformed
         // TODO add your handling code here:
-        server.IniciaServer();
-        txtStatusServer.setText("Servidor iniciado.");
+
+        System.out.println("Ligando servidores...");
+    
+        serversRaft[0] = RaftServer.criaServer(cluster, txtServidor1.getText(), Integer.parseInt(txtPortaCopyCat1.getText()));
+        serversRaft[1] = RaftServer.adicionaServer(cluster, txtServidor2.getText(), Integer.parseInt(txtPortaCopyCat2.getText()));
+        serversRaft[2] = RaftServer.adicionaServer(cluster, txtServidor3.getText(), Integer.parseInt(txtPortaCopyCat3.getText()));
+
+        CopycatClient c2 = RaftServer.iniciaCliente(cluster);
+        CopycatClient c1 = RaftServer.iniciaCliente(cluster);
+        
+        
+        
+       
+        
+        //c2.<ChangeEvent>onEvent("change", event -> System.out.println("CLASSE: " + event.getClass()));
+        
+        c2.onEvent("put", event -> {
+                System.out.println("PUT!!!");
+        });
+        
+ 
+        System.out.println("ANTES COMANDO.");
+        c1.submit(new PutCommand("inserir", 12));
+        c1.submit(new PutCommand("inserir", 13));
+        
+        //server[0].IniciaServer();
+        //server[1].IniciaServer();
+        //server[2].IniciaServer();
+        txtStatusServer.setText("Servidores iniciados.");
         txtStatusServer.setForeground(Color.GREEN);
     }//GEN-LAST:event_btnLigarActionPerformed
 
     private void btnSetarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSetarActionPerformed
-        // TODO add your handling code here:
-        this.caminho = txtSalva.getText();  
-        this.porta = Integer.parseInt(txtPorta.getText());
-        server.setPorta (porta);
-        server.setCaminho(caminho);
+         // TODO add your handling code here:
+        cluster.clear();
+        cluster.add(new Address(txtServidor1.getText(),Integer.parseInt(txtPortaCopyCat1.getText())));
+        cluster.add(new Address(txtServidor2.getText(),Integer.parseInt(txtPortaCopyCat2.getText())));
+        cluster.add(new Address(txtServidor3.getText(),Integer.parseInt(txtPortaCopyCat3.getText())));
+        
+        server[0].setPorta(Integer.parseInt(txtPorta1.getText()));
+        server[1].setPorta(Integer.parseInt(txtPorta2.getText()));
+        server[2].setPorta(Integer.parseInt(txtPorta3.getText()));
+        
+        idCluster = Integer.parseInt(txtIdCluster.getText());
+        server[0].setId(idCluster);
+        server[1].setId(idCluster);
+        server[2].setId(idCluster);
     }//GEN-LAST:event_btnSetarActionPerformed
 
-    private void txtPortaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtPortaActionPerformed
+    private void txtPorta1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtPorta1ActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_txtPortaActionPerformed
+    }//GEN-LAST:event_txtPorta1ActionPerformed
+
+    private void txtPorta2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtPorta2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtPorta2ActionPerformed
+
+    private void txtPorta3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtPorta3ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtPorta3ActionPerformed
+
+    private void txtPortaCopyCat1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtPortaCopyCat1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtPortaCopyCat1ActionPerformed
+
+    private void txtPortaCopyCat2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtPortaCopyCat2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtPortaCopyCat2ActionPerformed
+
+    private void txtPortaCopyCat3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtPortaCopyCat3ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtPortaCopyCat3ActionPerformed
+
+    private void txtIdClusterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtIdClusterActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtIdClusterActionPerformed
 
     /**
      * @param args the command line arguments
@@ -216,11 +404,24 @@ public class ServerUI extends javax.swing.JFrame {
     private javax.swing.JButton btnSetar;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JTextField txtPorta;
-    private javax.swing.JTextField txtSalva;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel9;
+    private javax.swing.JTextField txtIdCluster;
+    private javax.swing.JTextField txtPorta1;
+    private javax.swing.JTextField txtPorta2;
+    private javax.swing.JTextField txtPorta3;
+    private javax.swing.JTextField txtPortaCopyCat1;
+    private javax.swing.JTextField txtPortaCopyCat2;
+    private javax.swing.JTextField txtPortaCopyCat3;
+    private javax.swing.JTextField txtServidor1;
+    private javax.swing.JTextField txtServidor2;
+    private javax.swing.JTextField txtServidor3;
     private javax.swing.JLabel txtStatusServer;
     // End of variables declaration//GEN-END:variables
 }

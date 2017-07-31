@@ -5,6 +5,7 @@
  */
 package servidorsd;
 
+import io.atomix.catalyst.transport.Address;
 import java.nio.ByteBuffer;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -23,7 +24,14 @@ import shared.*;
 public class DBHandler implements GrafoDB.Iface {
 
     private final int N_SERVERS = 3;
-    private final String[] serverURLs = {"localhost:9090","localhost:9091","localhost:9092"};
+    private final String[][] serverURLs = {{"localhost:9000","localhost:9001","localhost:9002"},
+                                            {"localhost:9010","localhost:9011","localhost:9012"},
+                                            {"localhost:9020","localhost:9021","localhost:9022"},};
+    
+    private final Address[][] raftServerList = {{new Address("localhost",8000),new Address("localhost",8001),new Address("localhost",8002)},
+                                                {new Address("localhost",8010),new Address("localhost",8011),new Address("localhost",8012)},
+                                                {new Address("localhost",8020),new Address("localhost",8021),new Address("localhost",8022)}};
+    
     private final int serverID; //ID do server corrente
     
     private Grafo grafo = new Grafo();
@@ -264,10 +272,17 @@ public class DBHandler implements GrafoDB.Iface {
         }
         
         //É preciso remover arestas de todos os servidores:
-        for(String URLs : serverURLs)
+        /*for(String[] URLs : serverURLs)
         {
             if(URLs.compareTo(serverURLs[serverID]) != 0)
                     ClienteAux.removeArestaFromVertice(URLs, vert.getId());
+        }*/
+        for(int i =0;i<N_SERVERS;i++)
+        {
+            if(i != serverID)
+            {
+                ClienteAux.removeArestaFromVertice(serverURLs[i], vert.getId());
+            }
         }
         
         try
@@ -441,10 +456,17 @@ public class DBHandler implements GrafoDB.Iface {
         //É preciso pegar as arestas dos outros servidores
         if(recursive)
         {
-            for(String URLs : serverURLs)
+            /*for(String URLs : serverURLs)
             {
                 if(URLs.compareTo(serverURLs[serverID]) != 0)
                     listaArestas.addAll(ClienteAux.getArestas(URLs));
+            }*/
+            for(int i =0;i<N_SERVERS;i++)
+            {
+                if(i != serverID)
+                {
+                    listaArestas.addAll(ClienteAux.getArestas(serverURLs[i]));
+                }
             }
         }
         try
@@ -468,10 +490,17 @@ public class DBHandler implements GrafoDB.Iface {
         //É preciso pegar as arestas dos outros servidores
         if(recursive)
         {
-            for(String URLs : serverURLs)
+            /*for(String URLs : serverURLs)
             {
                 if(URLs.compareTo(serverURLs[serverID]) != 0)
                     vertices.addAll(ClienteAux.getVertices(URLs));
+            }*/
+            for(int i =0;i<N_SERVERS;i++)
+            {
+                if(i != serverID)
+                {
+                    vertices.addAll(ClienteAux.getVertices(serverURLs[i]));
+                }
             }
         }
         try

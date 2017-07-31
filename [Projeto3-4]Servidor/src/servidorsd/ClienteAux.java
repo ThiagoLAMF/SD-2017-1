@@ -58,9 +58,19 @@ public class ClienteAux {
         }
     }
     
-    public static boolean insereVertice(String URL,Vertice vert)
+    public static boolean insereVertice(String[] URL,Vertice vert)
     {
-        if(!iniciaConexao(URL)) return false;
+        boolean flagConexao = false;
+        for(String sURL : URL) //Conecta em qualquer servidor no mesmo cluster
+        {
+            if(iniciaConexao(sURL))
+            {
+                flagConexao = true;
+                break;
+            }
+        }
+        
+        if(!flagConexao) return false;
         
         try
         {
@@ -76,9 +86,19 @@ public class ClienteAux {
         } 
     }
     
-    public static boolean insereAresta(String URL,Aresta a)
+    public static boolean insereAresta(String[] URL,Aresta a)
     {
-        if(!iniciaConexao(URL)) return false;
+        boolean flagConexao = false;
+        for(String sURL : URL) //Conecta em qualquer servidor no mesmo cluster
+        {
+            if(iniciaConexao(sURL))
+            {
+                flagConexao = true;
+                break;
+            }
+        }
+        
+        if(!flagConexao) return false;
         
         try
         {
@@ -95,9 +115,19 @@ public class ClienteAux {
     }
 
     
-    public static Vertice getVertice(String URL,int id)
+    public static Vertice getVertice(String[] URL,int id)
     {
-        if(!iniciaConexao(URL)) return null;
+        boolean flagConexao = false;
+        for(String sURL : URL) //Conecta em qualquer servidor no mesmo cluster
+        {
+            if(iniciaConexao(sURL))
+            {
+                flagConexao = true;
+                break;
+            }
+        }
+        
+        if(!flagConexao) return null;
         
         try
         {
@@ -113,9 +143,19 @@ public class ClienteAux {
         } 
    }
    
-    public static boolean removeVertice(String URL,Vertice v)
+    public static boolean removeVertice(String[] URL,Vertice v)
     {
-        if(!iniciaConexao(URL)) return false;
+        boolean flagConexao = false;
+        for(String sURL : URL) //Conecta em qualquer servidor no mesmo cluster
+        {
+            if(iniciaConexao(sURL))
+            {
+                flagConexao = true;
+                break;
+            }
+        }
+        
+        if(!flagConexao) return false;
         
         try
         {
@@ -131,9 +171,19 @@ public class ClienteAux {
         } 
    }
    
-    public static boolean removeArestaFromVertice(String URL, int id)
+    public static boolean removeArestaFromVertice(String[] URL, int id)
     {
-        if(!iniciaConexao(URL)) return false;
+        boolean flagConexao = false;
+        for(String sURL : URL) //Conecta em qualquer servidor no mesmo cluster
+        {
+            if(iniciaConexao(sURL))
+            {
+                flagConexao = true;
+                break;
+            }
+        }
+        
+        if(!flagConexao) return false;
         
         try
         {
@@ -149,9 +199,19 @@ public class ClienteAux {
         } 
     }
    
-    public static boolean removeAresta(String URL,Aresta a)
+    public static boolean removeAresta(String[] URL,Aresta a)
     {
-        if(!iniciaConexao(URL)) return false;
+        boolean flagConexao = false;
+        for(String sURL : URL) //Conecta em qualquer servidor no mesmo cluster
+        {
+            if(iniciaConexao(sURL))
+            {
+                flagConexao = true;
+                break;
+            }
+        }
+        
+        if(!flagConexao) return false;
         
         try
         {
@@ -167,9 +227,19 @@ public class ClienteAux {
         } 
     }
    
-    public static boolean editaAresta(String URL,Aresta a)
+    public static boolean editaAresta(String[] URL,Aresta a)
     {
-        if(!iniciaConexao(URL)) return false;
+        boolean flagConexao = false;
+        for(String sURL : URL) //Conecta em qualquer servidor no mesmo cluster
+        {
+            if(iniciaConexao(sURL))
+            {
+                flagConexao = true;
+                break;
+            }
+        }
+        
+        if(!flagConexao) return false;
         
         try
         {
@@ -185,9 +255,19 @@ public class ClienteAux {
         } 
     }
    
-    public static boolean editaVertice(String URL,Vertice vert)
+    public static boolean editaVertice(String[] URL,Vertice vert)
     {
-        if(!iniciaConexao(URL)) return false;
+        boolean flagConexao = false;
+        for(String sURL : URL) //Conecta em qualquer servidor no mesmo cluster
+        {
+            if(iniciaConexao(sURL))
+            {
+                flagConexao = true;
+                break;
+            }
+        }
+        
+        if(!flagConexao) return false;
         
         try
         {
@@ -203,10 +283,19 @@ public class ClienteAux {
         } 
     }
    
-    public static List<Aresta> getArestas(String URL)
+    public static List<Aresta> getArestas(String[] URL)
     {
-        if(!iniciaConexao(URL)) return null;
+        boolean flagConexao = false;
+        for(String sURL : URL) //Conecta em qualquer servidor no mesmo cluster
+        {
+            if(iniciaConexao(sURL))
+            {
+                flagConexao = true;
+                break;
+            }
+        }
         
+        if(!flagConexao) return null;
         try
         {
             return client.getArestas(false);
@@ -221,9 +310,19 @@ public class ClienteAux {
         } 
     }
    
-    public static List<Vertice> getVertices(String URL)
+    public static List<Vertice> getVertices(String[] URL)
     {
-        if(!iniciaConexao(URL)) return null;
+        boolean flagConexao = false;
+        for(String sURL : URL) //Conecta em qualquer servidor no mesmo cluster
+        {
+            if(iniciaConexao(sURL))
+            {
+                flagConexao = true;
+                break;
+            }
+        }
+        
+        if(!flagConexao) return null;
         
         try
         {
