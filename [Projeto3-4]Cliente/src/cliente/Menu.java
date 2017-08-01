@@ -47,7 +47,6 @@ public class Menu extends javax.swing.JFrame {
         jButton9 = new javax.swing.JButton();
         jButton10 = new javax.swing.JButton();
         jButton11 = new javax.swing.JButton();
-        btnResetar = new javax.swing.JButton();
         btnInserirPessoa = new javax.swing.JButton();
         btnFilmesAssistidos = new javax.swing.JButton();
 
@@ -121,14 +120,6 @@ public class Menu extends javax.swing.JFrame {
             }
         });
 
-        btnResetar.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
-        btnResetar.setText("RESETAR");
-        btnResetar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnResetarActionPerformed(evt);
-            }
-        });
-
         btnInserirPessoa.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
         btnInserirPessoa.setText("INSERIR PESSOA");
         btnInserirPessoa.addActionListener(new java.awt.event.ActionListener() {
@@ -164,7 +155,6 @@ public class Menu extends javax.swing.JFrame {
                     .addComponent(jButton9, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jButton10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jButton11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnResetar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnInserirPessoa, javax.swing.GroupLayout.PREFERRED_SIZE, 227, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnFilmesAssistidos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(184, 184, 184))
@@ -192,8 +182,6 @@ public class Menu extends javax.swing.JFrame {
                 .addComponent(jButton9)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton10)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnResetar)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton11)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -274,19 +262,6 @@ public class Menu extends javax.swing.JFrame {
         dispose(); //Destroy the JFrame object
     }//GEN-LAST:event_jButton11ActionPerformed
 
-    private void btnResetarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResetarActionPerformed
-        try
-        {
-            conexao.getClient().resetaGrafo();
-             JOptionPane.showMessageDialog(null, "Grafo Resetado!");
-        }
-        catch(Exception e)
-        {
-            e.printStackTrace();
-            return;
-        }
-    }//GEN-LAST:event_btnResetarActionPerformed
-
     private void btnInserirPessoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInserirPessoaActionPerformed
         // TODO add your handling code here:
          /* Create and display the form */
@@ -347,7 +322,6 @@ public class Menu extends javax.swing.JFrame {
     private javax.swing.JButton btnFilmesAssistidos;
     private javax.swing.JButton btnInserirFilme;
     private javax.swing.JButton btnInserirPessoa;
-    private javax.swing.JButton btnResetar;
     private javax.swing.JButton jButton10;
     private javax.swing.JButton jButton11;
     private javax.swing.JButton jButton4;

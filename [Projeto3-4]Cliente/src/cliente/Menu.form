@@ -39,7 +39,6 @@
                   <Component id="jButton9" alignment="1" max="32767" attributes="0"/>
                   <Component id="jButton10" alignment="0" max="32767" attributes="0"/>
                   <Component id="jButton11" max="32767" attributes="0"/>
-                  <Component id="btnResetar" alignment="1" max="32767" attributes="0"/>
                   <Component id="btnInserirPessoa" alignment="0" min="-2" pref="227" max="-2" attributes="0"/>
                   <Component id="btnFilmesAssistidos" alignment="0" max="32767" attributes="0"/>
               </Group>
@@ -70,8 +69,6 @@
               <Component id="jButton9" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="jButton10" min="-2" max="-2" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
-              <Component id="btnResetar" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="jButton11" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="32767" attributes="0"/>
@@ -175,17 +172,6 @@
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton11ActionPerformed"/>
-      </Events>
-    </Component>
-    <Component class="javax.swing.JButton" name="btnResetar">
-      <Properties>
-        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-          <Font name="Calibri" size="18" style="1"/>
-        </Property>
-        <Property name="text" type="java.lang.String" value="RESETAR"/>
-      </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnResetarActionPerformed"/>
       </Events>
     </Component>
     <Component class="javax.swing.JButton" name="btnInserirPessoa">

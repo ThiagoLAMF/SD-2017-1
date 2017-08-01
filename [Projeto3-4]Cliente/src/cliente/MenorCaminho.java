@@ -54,12 +54,12 @@ public class MenorCaminho extends javax.swing.JFrame {
 
         jLabel3.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel3.setText("VERTICE 1");
+        jLabel3.setText("ID PESSOA1:");
         jLabel3.setToolTipText("");
 
         jLabel4.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
         jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel4.setText("VERTICE 2");
+        jLabel4.setText("ID PESSOA2:");
         jLabel4.setToolTipText("");
 
         btnSair.setFont(new java.awt.Font("Calibri", 1, 14)); // NOI18N
@@ -87,18 +87,18 @@ public class MenorCaminho extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(txtVertice1))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(txtVertice2, javax.swing.GroupLayout.DEFAULT_SIZE, 187, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addGap(0, 182, Short.MAX_VALUE)
                         .addComponent(btnCalcular)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(btnSair)))
+                        .addComponent(btnSair))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(txtVertice1, javax.swing.GroupLayout.DEFAULT_SIZE, 220, Short.MAX_VALUE)
+                            .addComponent(txtVertice2))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -142,7 +142,7 @@ public class MenorCaminho extends javax.swing.JFrame {
             List<Vertice>  vertices = conexao.getClient().getVertices(true);
             Vertice v1 = getVerticeById(id1,vertices);
             Vertice v2 = getVerticeById(id2,vertices);
-            List<Integer> retorno = null;
+            List<Vertice> retorno = null;
             if(v1 != null && v2 != null) retorno= conexao.getClient().getMenorCaminho(v1, v2);
             if(retorno == null || retorno.size() == 0)
             {
@@ -150,9 +150,21 @@ public class MenorCaminho extends javax.swing.JFrame {
             }
             else
             {
-                String str = "";
-                for(Integer i:retorno) str += " " + i;
-                JOptionPane.showMessageDialog(null, "Caminho: " + str);
+                StringBuilder builder = new StringBuilder("<html>"); 
+                for(Vertice i:retorno)
+                {
+                    if(i.getCor() == ClienteSD.TYPE_MOVIE)
+                    {
+                        builder.append("FILME: " + i.getDesc());
+                    }
+                    else if(i.getCor() == ClienteSD.TYPE_USER)
+                    {
+                        builder.append("PESSOA: " + i.getDesc());
+                    }
+                    builder.append("<br>");
+                }
+                 builder.append("</html>");
+                JOptionPane.showMessageDialog(null, builder.toString(), "Resultados:", JOptionPane.INFORMATION_MESSAGE);
             }
         }
         catch(Exception e)

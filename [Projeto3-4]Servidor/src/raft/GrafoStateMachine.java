@@ -24,7 +24,7 @@ public class GrafoStateMachine extends StateMachine {
     public Object put(Commit<PutCommand> commit) {
         try {
             map.put(commit.operation().key(), commit.operation().value());
-            //commit.session().
+            commit.session().publish("add");
         } finally {
         commit.close();
         }

@@ -104,7 +104,7 @@ public class Desenhar_Grafo extends JFrame{
                 g.draw(new Line2D.Double(coordenadasx[indexOrigem]+25,coordenadasy[indexOrigem]+25,coordenadasx[indexDestino]+25,coordenadasy[indexDestino]+25));
                 
                 g.setPaint(Color.BLUE); //Desenhando os pesos e nome
-                g.drawString("P:"+a.getPeso() +" D:" +a.getDesc(), ((coordenadasx[indexOrigem] + coordenadasx[indexDestino]) / 2) + 25, ((coordenadasy[indexOrigem] + coordenadasy[indexDestino]) / 2)+25);
+                g.drawString("Nota:"+a.getPeso(), ((coordenadasx[indexOrigem] + coordenadasx[indexDestino]) / 2) + 25, ((coordenadasy[indexOrigem] + coordenadasy[indexDestino]) / 2)+25);
                 //g.drawPolygon(new int[] {10, 20, 30}, new int[] {100, 20, 100}, 3);
             }
         }

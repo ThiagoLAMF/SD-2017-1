@@ -570,7 +570,7 @@ public class DBHandler implements GrafoDB.Iface {
      * @return 
      */
     @Override
-    public List<Integer> getMenorCaminho(Vertice v1, Vertice v2) {
+    public List<Vertice> getMenorCaminho(Vertice v1, Vertice v2) {
         List<Aresta> arestas = this.getArestas(true);
         List<Vertice> vertices = this.getVertices(true);
         try 
@@ -679,17 +679,25 @@ public class DBHandler implements GrafoDB.Iface {
             System.out.println("-----FIM-----");*/
 
             List<Integer> caminhoFinal = new ArrayList<>();
+            List<Vertice> caminhoRetorno = new ArrayList<>();
 
             int anterior = getAnterior(caminhos, v2.getId());
+            Vertice verticeAnterior = getVerticeAnterior(caminhos,v2);
+            
             caminhoFinal.add(v2.getId());
+            caminhoRetorno.add(v2);
             while (anterior != v1.getId()) 
             {
                 caminhoFinal.add(anterior);
                 anterior = getAnterior(caminhos, anterior);
+                caminhoRetorno.add(verticeAnterior);
+                verticeAnterior = getVerticeAnterior(caminhos,verticeAnterior);
             }
             caminhoFinal.add(v1.getId());
+            caminhoRetorno.add(v1);
+            Collections.reverse(caminhoRetorno);
             Collections.reverse(caminhoFinal);
-            return caminhoFinal;
+            return caminhoRetorno;
         } 
         catch (Exception e) 
         {
@@ -720,6 +728,10 @@ public class DBHandler implements GrafoDB.Iface {
     private int getAnterior(List<TabelaDijkstra>caminhos,int vId)
     {
         return caminhos.stream().filter(f -> f.vertice.getId() == vId).findFirst().get().verticeAnterior.getId();
+    }
+    private Vertice getVerticeAnterior(List<TabelaDijkstra>caminhos,Vertice vId)
+    {
+        return caminhos.stream().filter(f -> f.vertice.getId() == vId.getId()).findFirst().get().verticeAnterior;
     }
     
     private class TabelaDijkstra implements Comparable<TabelaDijkstra>

@@ -18,6 +18,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import javax.swing.event.ChangeEvent;
 import shared.Vertice;
 
 /**
@@ -43,9 +44,14 @@ public class RaftServer {
                                 .withStorageLevel(StorageLevel.DISK)
                                 .build())
                             .build();
-
+        Server.serializer().register(GetQuery.class);
+        Server.serializer().register(PutCommand.class);
         CompletableFuture<CopycatServer> future = Server.bootstrap();
         future.join();
+        
+        Server.cluster().onJoin(member -> {
+            System.out.println(member.address() + " joined the cluster");
+        });
         return Server;
    }
    
@@ -66,17 +72,27 @@ public class RaftServer {
                                 .build())
                             .build();
 
+        server.serializer().register(GetQuery.class);
+        server.serializer().register(PutCommand.class);
+        
         server.join(cluster).join();
+        System.out.println("STATE: " + server.state().toString());
         return server;
    }
    
+   public static void bootstrap(Collection<Address> cluster)
+   {
+       
+   }
    public static CopycatClient iniciaCliente(Collection<Address> cluster)
    {
        CopycatClient client = CopycatClient.builder(cluster)
         .withTransport(NettyTransport.builder()
-        .withThreads(2)
+        .withThreads(4)
             .build())
         .build();
+       client.serializer().register(PutCommand.class);
+       client.serializer().register(GetQuery.class);
        
        CompletableFuture<CopycatClient> future = client.connect(cluster);
        future.join();
